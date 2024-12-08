@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import Portfolio from "@/models/PortfolioInfo"; // Adjust the path to your Portfolio model
 import User from "@/models/User"; // Adjust the path to your User model
 import db from "@/utilities/db"; // Ensure you have a database connection file
 
@@ -25,13 +24,17 @@ export async function GET(req: NextRequest) {
     }
 
     // Assuming the Portfolio model has a userId or username field
-    const portfolio = await Portfolio.findOne({ userId: user._id }); // Find the portfolio based on userId
+    // const portfolio = await Portfolio.findOne({ userId: user._id }); // Find the portfolio based on userId
+    const userportfolio = await User.findOne({ username }).populate("portfolio") // Find the portfolio based on userId
 
-    if (!portfolio) {
+    if (!userportfolio) {
       return NextResponse.json({ success: false, message: "Portfolio not found for this user" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, data: portfolio });
+    return NextResponse.json({ success: true, data: {
+      image_url: user.image_url,
+      portfolio: userportfolio.portfolio,
+    }, });
   } catch (error) {
     return NextResponse.json({ success: false, error }, { status: 500 });
   }

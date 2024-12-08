@@ -119,6 +119,17 @@ export async function DELETE(request: NextRequest) {
 //       );
 //     }
 
+const deletedImg = await User.findById(userId);
+console.log("deletedService", deletedImg);
+// Check if user has an existing image
+if (deletedImg.public_id) {
+  console.log(
+    "Deleting existing image with public_id:",
+    deletedImg.public_id
+  );
+  await DeleteImage(deletedImg.public_id); // Delete the old image if it exists
+}
+
     // const user = await User.findOneAndDelete({ email });
     const user = await User.findByIdAndDelete(userId);
 
@@ -190,11 +201,46 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ message: "User not found." }, { status: 404 });
     }
 
-    // Parse form data for image and other inputs
     const formData = await request.formData();
-    const image = formData.get("image") as unknown as File;
-    const name = formData.get("name") as string; // Ensure name comes from formData, not JSON
-    const username = formData.get("username") as string; // Ensure name comes from formData, not JSON
+
+
+    const image = formData.get("image") as File;
+    const name = formData.get("name") as string;
+    const username = formData.get("username") as string;
+    const phoneNumber = formData.get("phoneNumber") as string;
+    const address = formData.get("address") as string;
+   
+    
+    const yearexperience = formData.get("yearexperience") as string;
+    const portfolioLink = formData.get("portfolioLink") as string;
+    
+    const preferences = {
+      industry: formData.get("preferences.industry") as string,
+      location: formData.get("preferences.location") as string,
+      experienceLevel: formData.get("preferences.experienceLevel") as string,
+      jobType: formData.get("preferences.jobType") as string,
+      skills: (formData.get("preferences.skills") as string),
+    };
+    
+    const experience = JSON.parse(formData.get("experience") as string);
+    const socialLinks = {
+      linkedin: formData.get("socialLinks.linkedin") as string,
+      github: formData.get("socialLinks.github") as string,
+      portfolio: formData.get("socialLinks.portfolio") as string,
+    };
+    const availabilityStatus = formData.get("availabilityStatus") as string;
+    const companyDetails = {
+      companyName: formData.get("companyDetails.companyName") as string,
+      website: formData.get("companyDetails.website") as string,
+      address: formData.get("companyDetails.address") as string,
+      contactNumber: formData.get("companyDetails.contactNumber") as string,
+    };
+    const industries = (formData.get("industries") as string);
+
+
+
+
+
 
     // Validate image
     if (image) {
@@ -231,18 +277,30 @@ export async function PATCH(request: NextRequest) {
       // Update user's image_url and public_id with new image data
       user.image_url = data.secure_url;
       user.public_id = data.public_id;
+
+   
     }
 
-    // Validate name
-    if (name || username) {
-      user.name = name; // Update the name
-      user.username = username; // Update the username
-    }
-
-    // Find user by ID
+   
+    // Update user's information
+    user.name = name ;
+    user.username = username ;
+    user.phoneNumber = phoneNumber ;
+    user.address = address ;
+    user.yearexperience = yearexperience ;
+    user.portfolioLink = portfolioLink ;
+    user.preferences = preferences;
+    user.experience = experience ;
+    user.socialLinks = socialLinks;
+    user.availabilityStatus = availabilityStatus ;
+    user.companyDetails = companyDetails ;
+    user.industries = industries ;
 
     // Save updated user details
     await user.save();
+    
+
+
 
     return NextResponse.json(
       {

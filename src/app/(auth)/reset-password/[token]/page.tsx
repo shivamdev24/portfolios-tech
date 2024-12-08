@@ -2,6 +2,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
 const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -57,37 +67,51 @@ const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
   };
 
   return (
-    <div>
-      <h1>Reset Your Password</h1>
+    <div className=" flex justify-center items-center h-screen w-full px-5">
+      <Card className="max-w-md mx-auto bg-white">
+      <CardHeader>
+        <CardTitle className="text-2xl">New Password</CardTitle>
+        <CardDescription>
+        Enter Your New Reset Password
+        </CardDescription>
+        <CardDescription>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
-      <form onSubmit={handleSubmit}>
+        
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3"> 
         {/* Token input is now displayed but disabled */}
-        <input
+        <Input
           type="text"
           placeholder="Token"
           value={token} // Token is now always a string or an empty string
           disabled
           required
+          className='hidden'
         />
-        <input
+        <Input
           type="password"
           placeholder="New Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <input
+        <Input
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-        <button type="submit" disabled={loading}>
+        <Button type="submit" className="w-full bg-black text-white hover:bg-gray-600 duration-500" disabled={loading}>
           {loading ? 'Resetting...' : 'Reset Password'}
-        </button>
+        </Button>
       </form>
+      </CardContent>
+      </Card>
+      
     </div>
   );
 };

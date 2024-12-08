@@ -45,20 +45,32 @@ export async function POST(request: NextRequest) {
     //   );
     // }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role , portfolio: user.portfolio},
-      process.env.TOKEN_SECRET!
-    );
+    const tokenSecret = process.env.TOKEN_SECRET;
+    if (!tokenSecret) {
+      console.error("TOKEN_SECRET environment variable is not set.");
+      return NextResponse.json(
+        { message: "Internal Server Error." },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json(
-      {
-        message: "Login successful!",
-        token,
-        user: { id: user._id, email: user.email, role: user.role , portfolio: user.portfolio},
-      },
-      { status: 200 }
-    );
+    
+      const tokenData = { id: user._id, email: user.email, role: user.role, portfolio: user.portfolio };
+      const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!);
+
+      const response = NextResponse.json(
+        { message: "Signup successful.", tokenData, token },
+        { status: 200 }
+      );
+
+     response.cookies.set("token", token, {
+       httpOnly: true,
+       secure: process.env.NODE_ENV === "production",
+       sameSite: "strict",
+     });
+    
+
+    return response;
   } catch (error) {
     console.error("Error logging in:", error);
     return NextResponse.json(

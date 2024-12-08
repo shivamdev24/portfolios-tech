@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
-// import User from "./User";
 
 // Define the Portfolio interface
 export interface IPortfolio extends Document {
   userId: mongoose.Schema.Types.ObjectId; // Reference to the user who owns this portfolio
-  title: string; // Portfolio title
+  
+  name: string; // Portfolio owner name
   bio: string; // Brief description or bio
+  profileImage?: string; // Cloudinary URL for the profile image
+  profileImagePublicId?: string; // Cloudinary public ID for the profile image
   contact: {
     email: string;
     phone?: string;
@@ -16,7 +18,10 @@ export interface IPortfolio extends Document {
     linkedin?: string;
     twitter?: string;
     website?: string;
+    extra?: string;
   };
+  jobtitle: string;
+  summery: string;
   skills: string[]; // Array of skills
   experiences: Array<{
     company: string;
@@ -31,7 +36,13 @@ export interface IPortfolio extends Document {
     technologies: string[];
     liveUrl?: string; // Optional link to the live project
     repoUrl?: string; // Optional link to the GitHub repo
-    image?: string; // Optional project image URL
+    project_image?: string; // Optional project image URL
+    project_public_id?: string;
+  }>;
+  blog: Array<{
+    title: string;
+    description: string | string[]; // Either a paragraph or an array of points
+    liveUrl?: string; // Optional link to the live project
   }>;
   createdAt?: Date;
   updatedAt?: Date;
@@ -45,11 +56,21 @@ const PortfolioSchema: Schema<IPortfolio> = new Schema(
       ref: "User",
       required: true,
     },
-    title: {
+    
+    name: {
       type: String,
       required: true,
     },
     bio: {
+      type: String,
+      required: true,
+    },
+   
+    jobtitle: {
+      type: String,
+      required: true,
+    },
+    summery: {
       type: String,
       required: true,
     },
@@ -63,6 +84,7 @@ const PortfolioSchema: Schema<IPortfolio> = new Schema(
       linkedin: { type: String },
       twitter: { type: String },
       website: { type: String },
+      extra: { type: String },
     },
     skills: {
       type: [String],
@@ -84,7 +106,14 @@ const PortfolioSchema: Schema<IPortfolio> = new Schema(
         technologies: { type: [String], required: true },
         liveUrl: { type: String },
         repoUrl: { type: String },
-        image: { type: String },
+       
+      },
+    ],
+    blog: [
+      {
+        title: { type: String, required: true },
+        description: { type: Schema.Types.Mixed, required: true }, // Allows string or array of strings
+        liveUrl: { type: String },
       },
     ],
   },

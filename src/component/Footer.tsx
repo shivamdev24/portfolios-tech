@@ -2,20 +2,19 @@
 import React from "react";
 import Image from "next/image";
 
-import BrandImg from "@/assets/Logo.png";
+import BrandImg from "@/assets/Plogo.png";
 import Link from "next/link";
 
 function Footer() {
     return (
-        <footer className="py-10 border-t   ">
+        <footer className="py-10 border-t bg-gray-800 text-white  ">
             <div className="max-w-7xl  mx-auto grid grid-cols-1 md:grid-cols-2">
                 <div className="flex flex-col items-center">
                     <Image
                         src={BrandImg}
                         alt="brandImg"
-                        className="h-20 p-1  rounded-[6px]   object-cover w-20 object-top"
+                        className="h-32 p-1  rounded-[6px]   object-cover w-32 object-top"
                     />
-                    <span className=" text-xl font-bold">Portfolio Tech</span>
                 </div>
                 {/* <div className="mt-8 md:mt-0">
                     <h1 className="font-bold text-lg">Quick Links</h1>

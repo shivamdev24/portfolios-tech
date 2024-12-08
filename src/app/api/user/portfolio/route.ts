@@ -4,6 +4,8 @@ import User from "@/models/User"; // Adjust the path to your Portfolio model
 import db from "@/utilities/db"; // Ensure you have a database connection file
 import  jwt,{ JwtPayload}  from "jsonwebtoken";
 
+
+
 // Connect to the database
 db();
 
@@ -49,6 +51,7 @@ export async function POST(req: NextRequest) {
       // Verify the token and extract user ID
       const tokenPayload = verifyToken(req);
       const userId = tokenPayload?.id; // Ensure the token contains a `userId` field
+      const portfolioId = tokenPayload?.portfolio; // Ensure the token contains a `userId` field
   
       if (!userId) {
         return NextResponse.json(
@@ -57,6 +60,13 @@ export async function POST(req: NextRequest) {
         );
       }
   
+      if(portfolioId){
+        return NextResponse.json(
+          { success: false, message: "Already have an portfolio" },
+          { status: 404 }
+        );
+      }
+
       // Parse the request body
       const body = await req.json();
   
@@ -103,6 +113,7 @@ export async function GET(req: NextRequest) {
   
       const userId = tokenPayload?.id; // Extracting userId from the token payload
   
+      console.log(userId)
   
       if (!userId) {
   
@@ -146,7 +157,7 @@ export async function PATCH(req: NextRequest) {
     console.log("Token Payload:", tokenPayload);
 
     const id = tokenPayload?.portfolio; // Replace with the correct key
-    console.log("User ID:", id);
+    console.log("portfolio ID:", id);
 
     
     if (!id) {
@@ -154,7 +165,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    const portfolio = await Portfolio.findByIdAndUpdate(id, body, { new: true });
+    const portfolio = await Portfolio.findByIdAndUpdate({id}, body, { new: true });
     if (!portfolio) {
       return NextResponse.json({ success: false, message: "Portfolio not found" }, { status: 404 });
     }
@@ -164,6 +175,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }
+
 
 // DELETE a Portfolio by ID
 export async function DELETE(req: NextRequest) {
