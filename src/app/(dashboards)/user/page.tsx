@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useSearchParams } from "next/navigation"; 
 
 interface User {
   email: string;
@@ -27,6 +27,7 @@ interface User {
 
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SearchResultsPage = () => {
   const searchParams = useSearchParams();
   const [userDetails, setUserDetails] = useState<User[]>([]);
@@ -88,6 +89,7 @@ const SearchResultsPage = () => {
   }, []);
 
   return (
+    <Suspense fallback={<p>Loading...</p>}>
     <div className="p-4">
       {/* Search Form */}
       <div className="max-w-7xl mx-auto">
@@ -194,6 +196,7 @@ const SearchResultsPage = () => {
       )}
       </div>
     </div>
+    </Suspense>
   );
 };
 
