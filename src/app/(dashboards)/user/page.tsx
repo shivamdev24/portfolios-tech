@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useSearchParams } from "next/navigation"; 
+// import { useSearchParams } from "next/navigation"; 
 
 interface User {
   email: string;
@@ -29,14 +29,18 @@ interface User {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SearchResultsPage = () => {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [userDetails, setUserDetails] = useState<User[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]); // Array to store search results
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const query = searchQuery || searchParams.get("query") || "";
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get("query");
+    setSearchQuery(queryParam || "");
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +124,7 @@ const SearchResultsPage = () => {
           <>
             <h1 className="text-2xl font-bold">Search Results</h1>
             <p className="mt-2 text-gray-600">
-              Results for: <strong>{query}</strong>
+              Results for: <strong>{searchQuery}</strong>
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
               {searchResults.map((result, index) => (
@@ -201,3 +205,6 @@ const SearchResultsPage = () => {
 };
 
 export default SearchResultsPage;
+
+
+
